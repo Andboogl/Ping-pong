@@ -18,12 +18,15 @@ class Game:
         pygame.display.set_caption(settings.WINDOW_CAPTION)
         pygame.display.set_icon(settings.WINDOW_ICON)
 
+        self.__play_mode = 'Playing'
         self.__init()
 
         # Score
         self.__left_score = 0
         self.__right_score = 0
         self.__score_font = pygame.font.Font('fonts/Score-Font.ttf', 50)
+
+        self.__pause_font = pygame.font.Font('fonts/Score-Font.ttf', 60)
 
     def __init(self) -> None:
         """Init game"""
@@ -37,50 +40,61 @@ class Game:
     def mainloop(self) -> None:
         """Game mainloop"""
         while True:
-            self.__screen.fill(settings.WINDOW_BACKGROUND_COLOR)
+            if self.__play_mode  == 'Playing':
+                self.__screen.fill(settings.WINDOW_BACKGROUND_COLOR)
 
-            # Score
-            text = f'{self.__left_score} - {self.__right_score}'
-            text_object = self.__score_font.render(text, True, (255, 255, 255))
-            self.__screen.blit(
-                text_object,
-                (settings.WINDOW_SIZE[0] / 2 - text_object.get_width() / 2, 10)
-                )
-            self.__table1.draw()
-            self.__table2.draw()
-            self.__ball.draw()
+                # Score
+                text = f'{self.__left_score} - {self.__right_score}'
+                text_object = self.__score_font.render(text, True, (255, 255, 255))
+                self.__screen.blit(
+                    text_object,
+                    (settings.WINDOW_SIZE[0] / 2 - text_object.get_width() / 2, 10)
+                    )
+                self.__table1.draw()
+                self.__table2.draw()
+                self.__ball.draw()
 
-            keys = pygame.key.get_pressed()
+                keys = pygame.key.get_pressed()
 
-            if keys[pygame.K_s]:
-                self.__table1.move('down')
+                if keys[pygame.K_s]:
+                    self.__table1.move('down')
 
-            elif keys[pygame.K_w]:
-                self.__table1.move('top')
+                elif keys[pygame.K_w]:
+                    self.__table1.move('top')
 
-            if keys[pygame.K_DOWN]:
-                self.__table2.move('down')
+                if keys[pygame.K_DOWN]:
+                    self.__table2.move('down')
 
-            elif keys[pygame.K_UP]:
-                self.__table2.move('top')
+                elif keys[pygame.K_UP]:
+                    self.__table2.move('top')
 
-            if self.__ball.image.colliderect(self.__table1.image_rect) or\
+                if self.__ball.image.colliderect(self.__table1.image_rect) or\
                     self.__ball.image.colliderect(self.__table2.image_rect):
-                self.__ball.push_back()
+                    self.__ball.push_back()
 
-            if self.__ball.x <= 0:
-                self.__right_score += 1
-                self.__init()
+                if self.__ball.x <= 0:
+                    self.__right_score += 1
+                    self.__init()
 
-            elif self.__ball.x + self.__ball.image.width >= settings.WINDOW_SIZE[0]:
-                self.__left_score += 1
-                self.__init()
+                elif self.__ball.x >= settings.WINDOW_SIZE[0]:
+                    self.__left_score += 1
+                    self.__init()
+
+                self.__ball.move()
+
+            if self.__play_mode == 'Pause':
+                self.__screen.blit(
+                    self.__pause_font.render('Pause', True, (255, 255, 255)),
+                    (550, 600))
 
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     sys.exit(0)
 
-            self.__ball.move()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:
+                        self.__play_mode = 'Pause' if self.__play_mode == 'Playing' else 'Playing'
+
             self.__clock.tick(settings.FPS)
             pygame.display.update()
 
