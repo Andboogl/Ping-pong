@@ -17,6 +17,11 @@ class Table:
 
         self.__image_rect = pygame.rect.Rect(self.__x, self.__y, self.__size[0], self.__size[1])
 
+    @property
+    def image_rect(self) -> pygame.rect.Rect:
+        """Get table image rect"""
+        return self.__image_rect
+
     def move(self, where: str) -> None:
         """Move table"""
         if where == 'down':
