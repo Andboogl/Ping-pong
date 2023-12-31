@@ -71,14 +71,17 @@ class Game:
                 if self.__ball.image.colliderect(self.__table1.image_rect) or\
                     self.__ball.image.colliderect(self.__table2.image_rect):
                     self.__ball.push_back()
+                    pygame.mixer.Sound('sounds/bump.mp3').play()
 
                 if self.__ball.x <= 0:
                     self.__right_score += 1
                     self.__init()
+                    pygame.mixer.Sound('sounds/loss.mp3').play()
 
                 elif self.__ball.x >= settings.WINDOW_SIZE[0]:
                     self.__left_score += 1
                     self.__init()
+                    pygame.mixer.Sound('sounds/loss.mp3').play()
 
                 self.__ball.move()
 
