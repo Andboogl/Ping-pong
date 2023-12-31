@@ -11,8 +11,8 @@ class Ball:
         self.__screen = screen
         self.__x = x
         self.__y = y
-        self.__x_speed = 6
-        self.__y_speed = 6
+        self.__x_speed = -8
+        self.__y_speed = -8
         self.__color = (255, 255, 155)
         self.__image = pygame.draw.circle(self.__screen, self.__color, (self.__x, self.__y), 40, 40)
 
